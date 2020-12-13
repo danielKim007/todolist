@@ -19,6 +19,6 @@ func ListenAndServer(cfg Config) error {
 		return err
 	}
 
-	return http.ListenAndServer(cfg.Address,
+	return http.ListenAndServe(cfg.Address,
 		loggingMiddleware(api.TodoListAPI()))
 }
