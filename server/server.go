@@ -2,8 +2,9 @@ package server
 
 import (
 	"net/http"
-	"https://github.com/danielKim007/todolist/api"
-	"https://github.com/danielKim007/todolist/db"
+
+	"github.com/danielKim007/todolist/api"
+	"github.com/danielKim007/todolist/db"
 )
 
 //Config server config

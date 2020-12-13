@@ -1,12 +1,15 @@
-ackage server
+package server
+
 import (
 	"log"
 	"net/http"
 )
+
 type statusCapturingResponseWriter struct {
 	http.ResponseWriter
 	status int
 }
+
 func (s *statusCapturingResponseWriter) WriteHeader(statusCode int) {
 	s.status = statusCode
 	s.ResponseWriter.WriteHeader(statusCode)
