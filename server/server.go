@@ -2,8 +2,8 @@ package server
 
 import (
 	"net/http"
-	"temp/api"
-	"temp/db"
+	"https://github.com/danielKim007/todolist/api"
+	"https://github.com/danielKim007/todolist/db"
 )
 
 //Config server config

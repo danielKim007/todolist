@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"temp/server"
+	"https://github.com/danielKim007/todolist/server"
 )
 
 // docker run --name tododb -p 5432:5432  -e POSTGRES_PASSWORD=1234Qwer -d postgres
