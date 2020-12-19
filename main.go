@@ -11,7 +11,7 @@ import (
 func main() {
 	if err := server.ListenAndServer(server.Config{
 		Address:     ":8080",
-		DatabaseURL: "postgresql://postgresql:1234Qwer@localhost:5432/todolist",
+		DatabaseURL: "postgresql://postgres:1234Qwer@localhost:5432/tododb?sslmode=disable",
 	}); err != nil {
 		log.Fatalln(err)
 	}
