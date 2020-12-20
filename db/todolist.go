@@ -102,3 +102,41 @@ func DeleteTodoList(id int) error {
 	}
 	return nil
 }
+
+// CreateTOdoItem creates a new todo itemDone
+func CreateTodoItem(listID int, text string, done bool) (item todo.Item, err error) {
+	item.Text = text
+	item.Done = done
+	err = db.QueryRow(`INSERT INTO todo_item (todo_list_id, text, done) VALUES ($1, $2, $3) RETURNING id`, listID, text, done).Scan(&item.ID)
+	return
+}
+
+// ModifyTodoItem modifies a todo item
+func ModifyTodoItem(listID, itemID int, text string, done bool) error {
+	res, err := db.Exec(`UPDATE todo_item SET text = $1, done = $2
+		WHERE id = $3 AND todo_list_id = $4`, text, done, itemID, listID)
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected, err := res.RowsAffected(); err != nil || rowsAffected == 0 {
+		return ErrNotFound
+	}
+
+	return nil
+}
+
+// DeleteTodoItem deletes a todo item
+func DeleteTodoItem(listID, itemID int) error {
+	res, err := db.Exec(`DELETE FROM todo_item
+		WHERE id = $1 AND todo_list_id = $2`, itemID, listID)
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected, err := res.RowsAffected(); err != nil || rowsAffected == 0 {
+		return ErrNotFound
+	}
+
+	return nil
+}
