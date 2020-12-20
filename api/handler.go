@@ -20,7 +20,7 @@ func getTodoLists(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(lists)
 }
 
-func cretaeTodoList(w http.ResponseWriter, r *http.Request) {
+func createTodoList(w http.ResponseWriter, r *http.Request) {
 	var req todo.List
 	parseJSON(r.Body, &req)
 	todoList, err := db.CreateTodoList(req.Name)
