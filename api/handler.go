@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/danielKim007/todolist/db"
+	"github.com/danielKim007/todolist/todo"
 )
 
 func getTodoLists(w http.ResponseWriter, r *http.Request) {
@@ -17,4 +18,12 @@ func getTodoLists(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	json.NewEncoder(w).Encode(lists)
+}
+
+func cretaeTodoList(w http.ResponseWriter, r *http.Request) {
+	var req todo.List
+	parseJSON(r.Body, &req)
+	todoList, err := db.CreateTodoList(req.Name)
+	must(err)
+	writeJSON(w, todoList)
 }

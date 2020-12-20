@@ -4,6 +4,7 @@ import (
 	"github.com/danielKim007/todolist/todo"
 )
 
+// GetTodoLists returns all todo lists
 func GetTodoLists() ([]todo.List, error) {
 	rows, err := db.Query(`SELECT id, name FROM todo_list`)
 	if err != nil {
@@ -21,6 +22,48 @@ func GetTodoLists() ([]todo.List, error) {
 	}
 
 	return lists, nil
+}
+
+// GetTodoList returns a specific todo list with its items
+func GetTodoList(todoListID int) (todo.ListWithItems, error) {
+	var list todo.ListWithItems
+
+	rows, err := db.Query(`SELECT l.id, l.name, i.id, i.text, i.done
+		FROM todo_list l
+		LEFT JOIN todo_item i ON l.id = i.todo_list_id
+		WHERE l.id = $1`, todoListID)
+	if err != nil {
+		return list, err
+	}
+	defer rows.Close()
+
+	list.Items = []todo.Item{}
+	var gotTodoList bool
+	for rows.Next() {
+		var (
+			itemID   *int
+			itemText *string
+			itemDone *bool
+		)
+		if err := rows.Scan(&list.ID, &list.Name,
+			&itemID, &itemText, &itemDone); err != nil {
+			return list, err
+		}
+		gotTodoList = true
+
+		if itemID != nil && itemText != nil && itemDone != nil {
+			list.Items = append(list.Items, todo.Item{
+				ID:   *itemID,
+				Text: *itemText,
+				Done: *itemDone})
+		}
+	}
+
+	if !gotTodoList {
+		return list, ErrNotFound
+	}
+
+	return list, nil
 }
 
 // CreateTodoList creates a new todo list
@@ -44,5 +87,18 @@ func RenameTodoList(id int, newName string) error {
 		return ErrNotFound
 	}
 
+	return nil
+}
+
+//DeleteTodoList deletes a todo list
+func DeleteTodoList(id int) error {
+	res, err := db.Exec(`DELETE FROM todo_list WHERE id = $1`)
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected, err := res.RowsAffected(); err != nil || rowsAffected == 0 {
+		return ErrNotFound
+	}
 	return nil
 }
